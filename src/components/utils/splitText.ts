@@ -13,11 +13,12 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText);
 export default function setSplitText() {
   ScrollTrigger.config({ ignoreMobileResize: true });
   if (window.innerWidth < 900) return;
+
   const paras: NodeListOf<ParaElement> = document.querySelectorAll(".para");
   const titles: NodeListOf<ParaElement> = document.querySelectorAll(".title");
 
   const TriggerStart = window.innerWidth <= 1024 ? "top 60%" : "20% 60%";
-  const ToggleAction = "play pause resume reverse";
+  const ToggleAction = "play pause resume resume reverse";
 
   paras.forEach((para: ParaElement) => {
     para.classList.add("visible");
@@ -26,13 +27,14 @@ export default function setSplitText() {
       para.split?.revert();
     }
 
-    para.split = new SplitText(para, {
+    const paraSplit = new SplitText(para, {
       type: "lines,words",
       linesClass: "split-line",
     });
+    para.split = paraSplit;
 
     para.anim = gsap.fromTo(
-      para.split.words,
+      paraSplit.words,
       { autoAlpha: 0, y: 80 },
       {
         autoAlpha: 1,
@@ -48,17 +50,21 @@ export default function setSplitText() {
       }
     );
   });
+
   titles.forEach((title: ParaElement) => {
     if (title.anim) {
       title.anim.progress(1).kill();
       title.split?.revert();
     }
-    title.split = new SplitText(title, {
+
+    const titleSplit = new SplitText(title, {
       type: "chars,lines",
       linesClass: "split-line",
     });
+    title.split = titleSplit;
+
     title.anim = gsap.fromTo(
-      title.split.chars,
+      titleSplit.chars,
       { autoAlpha: 0, y: 80, rotate: 10 },
       {
         autoAlpha: 1,
